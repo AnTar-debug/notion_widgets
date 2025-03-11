@@ -1,1 +1,61 @@
-Hallo Word!
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Времето по местоположение</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+            background-color: #f4f4f4;
+        }
+        #weather-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Провери времето</h2>
+    <input type="text" id="city" placeholder="Въведи град">
+    <button onclick="getWeather()">Провери</button>
+    <div id="weather-container"></div>
+    
+    <script>
+        async function getWeather() {
+            const apiKey = '5576b74802b65c430867b6ea4b9b8be8; // Замени с твоя API ключ
+            const city = document.getElementById('city').value;
+            if (!city) {
+                alert("Моля, въведете град.");
+                return;
+            }
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&lang=bg&appid=${apiKey}`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.cod !== 200) {
+                    throw new Error(data.message);
+                }
+                document.getElementById('weather-container').innerHTML = `
+                    <h3>${data.name}, ${data.sys.country}</h3>
+                    <p>${data.weather[0].description}</p>
+                    <p>Температура: ${data.main.temp}°C</p>
+                    <p>Влажност: ${data.main.humidity}%</p>
+                `;
+            } catch (error) {
+                alert("Грешка: " + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
